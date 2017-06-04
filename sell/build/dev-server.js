@@ -1,60 +1,59 @@
-require('./check-versions')()
+require('./check-versions')();
 
-var config = require('../config')
+var config = require('../config');
 if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
+  process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV);
 }
 
-var opn = require('opn')
-var path = require('path')
-var express = require('express')
-var webpack = require('webpack')
-var proxyMiddleware = require('http-proxy-middleware')
-var webpackConfig = require('./webpack.dev.conf')
+var opn = require('opn');
+var path = require('path');
+var express = require('express');
+var webpack = require('webpack');
+var proxyMiddleware = require('http-proxy-middleware');
+var webpackConfig = require('./webpack.dev.conf');
+
+// default port where dev server listens for incoming traffic
+var port = process.env.PORT || config.dev.port;
+// automatically open browser, if not set will be false
+var autoOpenBrowser = !!config.dev.autoOpenBrowser;
+// Define HTTP proxies to your custom API backend
+// https://github.com/chimurai/http-proxy-middleware
+var proxyTable = config.dev.proxyTable;
+
+var app = express();
 
 //yqw
-var app = express()
-var appData = require('../data.json')
-var seller = appData.seller
-var goods = appData.goods
-var rates = appData.ratings
+var appData = require('../data.json');
+var seller = appData.seller;
+var goods = appData.goods;
+var ratings = appData.ratings;
 
-var apiRoutes = express.Router()
+var apiRoutes = express.Router();
 apiRoutes.get('/seller', function (req, res) {
   res.json({
     errno:0,
     data: seller
-  })
-})
+  });
+});
 
 apiRoutes.get('/goods', function (req, res) {
   res.json({
     errno:0,
     data: goods
-  })
-})
-apiRoutes.get('/rates', function (req, res) {
+  });
+});
+apiRoutes.get('/ratings', function (req, res) {
   res.json({
     errno:0,
-    data: rates
-  })
-})
+    data: ratings
+  });
+});
 
-app.use('/api', apiRoutes)
+app.use(apiRoutes);
 
 //end
 
-// default port where dev server listens for incoming traffic
-var port = process.env.PORT || config.dev.port
-// automatically open browser, if not set will be false
-var autoOpenBrowser = !!config.dev.autoOpenBrowser
-// Define HTTP proxies to your custom API backend
-// https://github.com/chimurai/http-proxy-middleware
-var proxyTable = config.dev.proxyTable
-
-var app = express()
-var compiler = webpack(webpackConfig)
-
+var compiler = webpack(webpackConfig);
 var devMiddleware = require('webpack-dev-middleware')(compiler, {
   publicPath: webpackConfig.output.publicPath,
   quiet: true
