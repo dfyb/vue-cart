@@ -7,7 +7,7 @@ import router from './router';
 import vueResource from 'vue-resource';
 Vue.use(vueResource);
 
-// import '@common/stylus/index.styl';
+import './common/stylus/index.styl';
 
 Vue.config.productionTip = false;
 
